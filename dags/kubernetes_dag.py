@@ -6,6 +6,10 @@ from airflow.contrib.operators.slack_webhook_operator import \
     SlackWebhookOperator
 from airflow.hooks.base_hook import BaseHook
 
+AIRFLOW__KUBE_CONFIG = "/usr/local/airflow/.kube/config"
+# AIRFLOW__KUBE_CONFIG = "/home/jaimehmol/.kube/config"
+# AIRFLOW__KUBE_CONFIG = "/docker/airflow/config"
+
 default_args = {
     "owner": "airflow",
     "start_date": datetime(2020, 10, 1),
@@ -19,7 +23,7 @@ default_args = {
 
 slack_token = BaseHook.get_connection("slack_conn").password
 
-with DAG(dag_id="kubernetes_dag", schedule_interval="*/5 * * * *",
+with DAG(dag_id="kubernetes_dag", schedule_interval="*/30 * * * *",
          default_args=default_args, catchup=False) as dag:
     say_hello_to_my_little_friend = kubernetes_pod_operator.KubernetesPodOperator(
         # The ID specified for the task.
@@ -31,7 +35,7 @@ with DAG(dag_id="kubernetes_dag", schedule_interval="*/5 * * * *",
         cmds=['sh', '-c', 'echo "Hello, Kubernetes!" && sleep 30'],
         in_cluster=False,
         namespace='default',
-        config_file="/usr/local/airflow/.kube/config"
+        config_file=AIRFLOW__KUBE_CONFIG
     )
 
     sending_slack_notification = SlackWebhookOperator(

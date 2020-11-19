@@ -6,7 +6,7 @@ WORKDIR $AIRFLOW_HOME
 RUN mkdir -p $AIRFLOW_HOME/data
 COPY data.csv $AIRFLOW_HOME/data/data.csv
 COPY start-airflow.sh $AIRFLOW_HOME/start-airflow.sh
-COPY airflow.cfg $AIRFLOW_HOME/airflow.cfg
+# COPY airflow.cfg $AIRFLOW_HOME/airflow.cfg
 COPY sql $AIRFLOW_HOME
 COPY requirements.txt ./requirements.txt
 RUN pip install --user "apache-airflow[async,celery,crypto,jdbc,kubernetes,password,postgres,redis,slack]==1.10.12" --constraint ./requirements.txt

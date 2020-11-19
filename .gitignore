@@ -141,3 +141,4 @@ unittest.cfg
 airflow.db
 .pytest_cache
 logs
+config

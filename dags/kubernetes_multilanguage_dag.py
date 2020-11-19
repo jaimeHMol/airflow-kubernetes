@@ -7,6 +7,8 @@ from airflow.contrib.operators.slack_webhook_operator import \
 from airflow.hooks.base_hook import BaseHook
 
 AIRFLOW__KUBE_CONFIG = "/usr/local/airflow/.kube/config"
+# AIRFLOW__KUBE_CONFIG = "/home/jaimehmol/.kube/config"
+# AIRFLOW__KUBE_CONFIG = "/docker/airflow/config"
 
 default_args = {
     "owner": "airflow",
@@ -21,7 +23,7 @@ default_args = {
 
 slack_token = BaseHook.get_connection("slack_conn").password
 
-with DAG(dag_id="kubernetes_multilanguage_dag", schedule_interval="*/5 * * * *",
+with DAG(dag_id="kubernetes_multilanguage_dag", schedule_interval="*/30 * * * *",
          default_args=default_args, catchup=False) as dag:
     first_python = kubernetes_pod_operator.KubernetesPodOperator(
         # The ID specified for the task.
@@ -29,6 +31,7 @@ with DAG(dag_id="kubernetes_multilanguage_dag", schedule_interval="*/5 * * * *",
         # Name of task you want to run, used to generate Pod ID.
         name='python',
         image='localhost:5000/pycon-python-example',
+        # image='python:3',
         is_delete_operator_pod=True,
         in_cluster=False,
         namespace='default',
